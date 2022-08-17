@@ -1,1 +1,1 @@
-# QtDesigner_test
+# QtDesigner_calculator
