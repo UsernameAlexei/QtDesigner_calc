@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 
 class Ui_MainWindow(object):
@@ -173,7 +174,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.add_functions()
-        self.is_equal=False
+        self.is_equal = False
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -222,9 +223,32 @@ class Ui_MainWindow(object):
             self.label_result.setText(self.label_result.text() + number)
 
     def results(self):
-        res = eval(self.label_result.text())
-        self.label_result.setText("Результат: " + str(res))
-        self.is_equal = True
+        if not self.is_equal:
+            res = eval(self.label_result.text())
+            self.label_result.setText("Результат: " + str(res))
+            self.is_equal = True
+        else:
+            # всплывающие окна
+            error = QMessageBox()
+            error.setWindowTitle("Ошибка")
+            error.setText("Сейчас это действие выполнить нельзя")
+            error.setIcon(QMessageBox.Warning)
+            error.setStandardButtons(QMessageBox.Reset | QMessageBox.Cancel | QMessageBox.Ok)
+
+            error.setDefaultButton(QMessageBox.Ok)
+            error.setInformativeText("Действие не выполнить")
+            error.setDetailedText('Описание')
+
+            error.buttonClicked.connect(self.popup_action)
+
+            error.exec_()
+
+    def popup_action(self, btn):
+        if btn.text() == 'Ok':
+            print('print ok')
+        elif btn.text() == "Reset":
+            self.label_result.setText("")
+            self.is_equal = False
 
 
 if __name__ == "__main__":
